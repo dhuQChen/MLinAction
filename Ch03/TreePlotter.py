@@ -99,8 +99,8 @@ def retrieveTree(i):
 # createPlot(myTree)
 
 
-# case 2
-myTree = retrieveTree(0)
-myTree['no surfacing'][3] = 'maybe'
-print(myTree)
-createPlot(myTree)
+# # case 2
+# myTree = retrieveTree(0)
+# myTree['no surfacing'][3] = 'maybe'
+# print(myTree)
+# createPlot(myTree)

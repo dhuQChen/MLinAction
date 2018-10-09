@@ -1,5 +1,6 @@
 from math import log
-
+import TreePlotter
+import operator
 import matplotlib.pyplot as plt
 
 
@@ -97,6 +98,14 @@ def createTree(dataSet, labels):
 # # res = splitDataSet(myData, 0, 1)
 # # res = calcShannonEnt(myData)
 # print(myTree)
+
+fr = open('lenses.txt')
+lenses = [inst.strip().split('\t') for inst in fr.readlines()]
+lensesLabels = ['age', 'prescript', 'astigmatic', 'tearRate']
+lensesTree = createTree(lenses, lensesLabels)
+TreePlotter.createPlot(lensesTree)
+
+
 
 
 
