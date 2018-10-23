@@ -8,5 +8,5 @@ Ch05: Logistic Regression
 Ch06: Support Vector Machine   
 
 ## Part2: Notes   
-kNN: Notes  
-logRegression: Notes  
+kNN
+logRegression
