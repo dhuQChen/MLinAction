@@ -1,14 +1,21 @@
+import matplotlib.pyplot as plt
 import numpy as np
 
 
-def loadSimpData():
-    datMat = np.matrix([[1., 2.1],
-                     [2., 1.1],
-                     [1.3, 1.],
-                     [1., 1.],
-                     [2., 1.]])
-    classLabels = [1.0, 1.0, -1.0, -1.0, 1.0]
-    return datMat, classLabels
+def loadDataSet(fileName):
+    numFeat = len(open(fileName).readline().split('\t'))
+    dataMat = []
+    labelMat = []
+    fr = open(fileName)
+    for line in fr.readlines():
+        lineArr = []
+        curLine = line.strip().split('\t')
+        for i in range(numFeat - 1):
+            lineArr.append(float(curLine[i]))
+        dataMat.append(lineArr)
+        labelMat.append(float(curLine[-1]))
+    return dataMat, labelMat
+
 
 
 # classify by threshVal
@@ -91,22 +98,41 @@ def adaBoostTrainDS(dataMat, classLabels, numIt=40):
         print("total error: ", errorRate, "\n")
         if errorRate == 0.0:
             break
-    return weekClassArr
+    return weekClassArr,aggClassEst
 
 
-def adaClassify(dataToClass, classifierArr):
-    dataMatrix = np.mat(dataToClass)
-    m = np.shape(dataMatrix)[0]
-    aggClassEst = np.mat(np.zeros((m, 1)))
-    for i in range(len(classifierArr)):
-        classEst = stumpClassify(dataMatrix, classifierArr[i]['dim'],
-                                 classifierArr[i]['thresh'], classifierArr[i]['ineq'])
-        aggClassEst += classifierArr[i]['alpha'] * classEst
-        print(aggClassEst)
-    print(np.sign(aggClassEst))
-    return np.sign(aggClassEst)
+def plotROC(predStrengths, classLabels):
+    cur = (1.0, 1.0)
+    ySum = 0.0
+    numPosClass = np.sum(np.array(classLabels) == 1.0)
+    yStep = 1 / np.float(numPosClass)
+    xStep = 1 / np.float(len(classLabels) - numPosClass)
+    sortedIndicies = predStrengths.argsort()
+    fig = plt.figure()
+    fig.clf()
+    ax = plt.subplot(111)
+    for index in sortedIndicies.tolist()[0]:
+        if classLabels[index] == 1.0:
+            delX = 0
+            delY = yStep
+        else:
+            delX = xStep
+            delY = 0
+            ySum += cur[1]
+        ax.plot([cur[0], cur[0] - delX], [cur[1], cur[1] - delY], c='r')
+        cur = (cur[0] - delX, cur[1] - delY)
+    ax.plot([0, 1], [0, 1], 'b--')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC curve for AdaBoost Horse Colic Detection System')
+    ax.axis([0, 1, 0, 1])
+    plt.show()
+    print("the Area Under the Curve is: ", ySum * xStep)
 
 
-dataMat, classLabels = loadSimpData()
-classifierArr = adaBoostTrainDS(dataMat, classLabels, 9)
-adaClassify([[5, 5], [0, 0]], classifierArr)
+dataArr, labelArr = loadDataSet('horseColicTraining2.txt')
+classifierArray, aggClassEst = adaBoostTrainDS(dataArr, labelArr, 10)
+plotROC(aggClassEst.T, labelArr)
+
+
+
