@@ -8,7 +8,8 @@ Ch05: Logistic Regression
 Ch06: Support Vector Machine   
 Ch07: AdaBoot meta-algorithm    
 Ch08: Regression   
-Ch09: CART
+Ch09: CART    
+Ch10: KMeans
 
 ## Part2: Notes   
 kNN  
